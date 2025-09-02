@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,13 +41,19 @@ static void init_env() {
 	}
 }
 
+// function for debugging and testing purposes
 void print_env() {
     ScopeStack *global = &program_stack.global;
     uint64_t env_size = sizeof(env) / sizeof(char*);
     
     for (int i = 0; i < env_size; i++) {
         char *value = map_get(global->data[0], env[i]);
+        assert(value != NULL);
+        assert(env[i] != NULL);
+
+#ifdef DEBUG
         if (value != NULL) printf("%s: %s\n", env[i], value);
+#endif
     }
 }
 
@@ -122,5 +129,4 @@ inline void scope_stack_push_data(ScopeStack *st, char *key, char *data) {
     }
 
     map_insert(st->data[st->top], key, data);
-    puts("pushed data");
 }
